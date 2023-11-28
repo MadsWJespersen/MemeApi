@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using MemeApi.Controllers;
-using MemeApi.library;
-using MemeApi.Models.Context;
 using MemeApi.Models.DTO;
 using MemeApi.Models.Entity;
 using MemeApi.Test.library;
@@ -15,6 +7,9 @@ using MemeApi.Test.utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace MemeApi.Test.Controllers
@@ -24,7 +19,7 @@ namespace MemeApi.Test.Controllers
         [Fact]
         public async Task GIVEN_Visual_WHEN_CreatingMeme_THEN_MemeIsCreated()
         {
-            var controller = new MemesController(_memeRepository);
+            var controller = new MemesController(_memeRepository, _memeRenderingService);
 
             // given
             var filename = "test.png";
@@ -49,15 +44,17 @@ namespace MemeApi.Test.Controllers
         [Fact]
         public async Task GIVEN_CreatedDummyMemeBottomText_WHEN_GettingMemeBottomText_THEN_MemeBottomTextHasProperValues()
         {
-            var controller = new MemesController(_memeRepository);
+            var controller = new MemesController(_memeRepository, _memeRenderingService);
 
             // given
             var visual = new MemeVisual()
             {
+                Id = Guid.NewGuid().ToString(),
                 Filename = "Test"
             };
             var meme = new Meme
             {
+                Id = Guid.NewGuid().ToString(),
                 MemeVisual = visual,
             };
             _context.Memes.Add(meme);
@@ -71,11 +68,10 @@ namespace MemeApi.Test.Controllers
 
             result.Should().NotBeNull();
             result.Should().BeOfType<OkObjectResult>();
-            var foundMemeText = ((OkObjectResult)result).Value as Meme;
+            var foundMemeText = ((OkObjectResult)result).Value as MemeDTO;
 
-            foundMemeText.MemeVisual.Should().Be(visual);
+            foundMemeText.MemeVisual.Should().Be(visual.Filename);
             foundMemeText.Id.Should().Be(meme.Id);
-            foundMemeText.Votes.Should().BeNull();
         }
 
         public static IFormFile CreateFormFile(int size, string filename)

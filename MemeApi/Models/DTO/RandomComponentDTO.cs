@@ -1,21 +1,9 @@
-﻿namespace MemeApi.Models.DTO
-{
-    /// <summary>
-    /// A DTO for a random meme or component.
-    /// </summary>
-    public class RandomComponentDTO
-    {
-        /// <summary>
-        /// The data or content of the component
-        /// </summary>
-        public string data { get; set; }
-        /// <summary>
-        /// The components ID
-        /// </summary>
-        public string id { get; set; }
-        /// <summary>
-        /// The vote score of the component
-        /// </summary>
-        public int votes { get; set; }
-    }
-}
+﻿namespace MemeApi.Models.DTO;
+
+/// <summary>
+/// A DTO for a random meme or component.
+/// </summary>
+/// <param name="data"> The data or content of the component </param>
+/// <param name="id"> The components ID </param>
+/// <param name="votes"> The vote score of the component </param>
+public record RandomComponentDTO(string data, string id, int votes);

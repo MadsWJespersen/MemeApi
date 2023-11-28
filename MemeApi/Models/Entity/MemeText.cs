@@ -1,8 +1,7 @@
-﻿namespace MemeApi.Models.Entity
+﻿namespace MemeApi.Models.Entity;
+
+public class MemeText : Votable
 {
-    public class MemeText : Votable
-    {
-        public string Text { get; set; }
-        public MemeTextPosition Position { get; set; }
-    }
+    public string Text { get; set; }
+    public MemeTextPosition Position { get; set; }
 }

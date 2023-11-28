@@ -1,7 +1,6 @@
-﻿using MemeApi.Models.Entity;
-using System;
+﻿using System;
 
-namespace MemeApi.Models
+namespace MemeApi.Models.Entity
 {
     public class Vote
     {

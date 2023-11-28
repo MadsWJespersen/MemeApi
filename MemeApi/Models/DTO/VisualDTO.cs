@@ -1,25 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MemeApi.Models.DTO
-{
-    public class VisualDTO
-    {
-        /// <summary>
-        /// Filename of the Visual
-        /// </summary>
-        public string Id { get; set; }
-        /// <summary>
-        /// Filename of the Visual
-        /// </summary>
-        public string Filename { get; set; }
-        /// <summary>
-        /// Topics that the Visual are in
-        /// </summary>
-        public List<string> Topics { get; set; }
-        /// <summary>
-        /// The time at which the Visual was created
-        /// </summary>
-        public DateTime CreatedAt { get; set; }
-    }
-}
+namespace MemeApi.Models.DTO;
+
+/// <param name="Id"> Filename of the Visual </param>
+/// <param name="Filename"> Filename of the Visual </param>
+/// <param name="Topics"> Topics that the Visual are in </param>
+/// <param name="CreatedAt"> The time at which the Visual was created </param>
+public record VisualDTO(string Id, string Filename, List<string> Topics, DateTime CreatedAt);

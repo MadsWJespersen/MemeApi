@@ -1,23 +1,22 @@
 ﻿using MemeApi.Models.Entity;
 using System.ComponentModel.DataAnnotations;
 
-namespace MemeApi.Models.DTO
+namespace MemeApi.Models.DTO;
+
+/// <summary>
+/// A DTO for creating text
+/// </summary>
+public record TextCreationDTO
 {
     /// <summary>
-    /// A DTO for creating text
+    /// The textual content
     /// </summary>
-    public class TextCreationDTO
-    {
-        /// <summary>
-        /// The textual content
-        /// </summary>
-        [Required]
-        public string Text { get; set; }
+    [Required]
+    public string Text { get; init; }
 
-        /// <summary>
-        /// The texts position
-        /// </summary>
-        [Required]
-        public MemeTextPosition position { get; set; }
-    }
+    /// <summary>
+    /// The texts position
+    /// </summary>
+    [Required]
+    public MemeTextPosition position { get; init; }
 }

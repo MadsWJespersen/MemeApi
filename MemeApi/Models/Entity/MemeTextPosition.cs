@@ -1,8 +1,7 @@
-﻿namespace MemeApi.Models.Entity
+﻿namespace MemeApi.Models.Entity;
+
+public enum MemeTextPosition
 {
-    public enum MemeTextPosition
-    {
-        TopText,
-        BottomText
-    }
+    TopText,
+    BottomText
 }

@@ -1,5 +1,4 @@
-﻿using MemeApi.library;
-using MemeApi.library.repositories;
+﻿using MemeApi.library.repositories;
 using MemeApi.Models.Context;
 using MemeApi.Models.Entity;
 using Microsoft.AspNetCore.Builder;
@@ -15,6 +14,9 @@ using System.Net;
 using System;
 using System.IO;
 using System.Reflection;
+using MemeApi.library.Services;
+using MemeApi.library.Services.Files;
+using MemeApi.library;
 
 namespace MemeApi
 {
@@ -83,6 +85,9 @@ namespace MemeApi
             services.AddScoped<IFileSaver, FileSaver>();
             services.AddScoped<IFileRemover, FileRemover>();
             services.AddScoped<IMailSender, MailSender>();
+            services.AddScoped<IMemeRenderingService, MemeRenderingService>();
+            services.AddScoped<MailSender>();
+            services.AddScoped<MemeRenderingService>();
 
             services.AddScoped<UserRepository>();
             services.AddScoped<MemeRepository>();
@@ -90,6 +95,10 @@ namespace MemeApi
             services.AddScoped<TextRepository>();
             services.AddScoped<VotableRepository>();
             services.AddScoped<TopicRepository>();
+
+
+            services.AddScoped<IMemeOfTheDayService, MemeOfTheDayService>();
+            services.AddHostedService<ConsumeScopedServiceHostedService>();
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {

@@ -1,24 +1,12 @@
 ﻿using System.Collections.Generic;
 
-namespace MemeApi.Models.DTO
-{
-    /// <summary>
-    /// A DTO of user info
-    /// </summary>
-    public class UserInfoDTO
-    {
+namespace MemeApi.Models.DTO;
 
-        /// <summary>
-        /// Users name
-        /// </summary>
-        public string UserName { get; set; }
-        /// <summary>
-        /// Users profile picture URL
-        /// </summary>
-        public string ProfilePicURl { get; set; }
-        /// <summary>
-        /// Topics that the users owns
-        /// </summary>
-        public List<string> Topics { get; set; }
-    }
-}
+
+/// <summary>
+/// A DTO of user info
+/// </summary>
+/// <param name="UserName"> Users name </param>
+/// <param name="ProfilePicURl"> Users profile picture URL </param>
+/// <param name="Topics"> Topics that the users owns </param>
+public record UserInfoDTO(string UserName, string ProfilePicURl, List<string> Topics);

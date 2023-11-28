@@ -1,21 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MemeApi.Models.DTO
+namespace MemeApi.Models.DTO;
+
+/// <summary>
+/// A DTO for creating Topics
+/// </summary>
+public record TopicCreationDTO
 {
     /// <summary>
-    /// A DTO for creating Topics
+    /// Name of the topic
     /// </summary>
-    public class TopicCreationDTO
-    {
-        /// <summary>
-        /// Name of the topic
-        /// </summary>
-        [Required]
-        public string TopicName { get; set; }
-        /// <summary>
-        /// Description of the topic
-        /// </summary>
-        [Required]
-        public string Description { get; set; }
-    }
+    [Required]
+    public string TopicName { get; init; }
+
+    /// <summary>
+    /// Description of the topic
+    /// </summary>
+    [Required]
+    public string Description { get; init; }
 }

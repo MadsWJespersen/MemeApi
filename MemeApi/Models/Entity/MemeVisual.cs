@@ -1,7 +1,6 @@
-﻿namespace MemeApi.Models.Entity
+﻿namespace MemeApi.Models.Entity;
+
+public class MemeVisual : Votable
 {
-    public class MemeVisual : Votable
-    {
-        public string Filename { get; set; }
-    }
+    public string Filename { get; set; }
 }

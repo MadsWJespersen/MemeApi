@@ -8,6 +8,7 @@ using MemeApi.Test.utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Xunit;
@@ -20,6 +21,7 @@ namespace MemeApi.Test.Controllers
         public async Task GIVEN_DummyFile_WHEN_CreatingMemeVisual_THEN_MemeVisualIsCreatedWithProperValues()
         {
             var controller = new VisualsController(_visualRepository, _configuration);
+            controller.ControllerContext.HttpContext = GetMockedHttpContext();
 
             // given
             var fileStream = new MemoryStream(5);
@@ -43,6 +45,7 @@ namespace MemeApi.Test.Controllers
             // given
             var visual = new MemeVisual()
             {
+                Id = Guid.NewGuid().ToString(),
                 Filename = "Test"
             };
             _context.Visuals.Add(visual);
@@ -67,6 +70,7 @@ namespace MemeApi.Test.Controllers
         public async Task GIVEN_TwoDummyFilesWithSameName_WHEN_CreatingMemeVisuals_THEN_SecondMemeVisualIsHasDifferentName()
         {
             var controller = new VisualsController(_visualRepository, _configuration);
+            controller.ControllerContext.HttpContext = GetMockedHttpContext();
 
             // given
             var fileStream = new MemoryStream(5);
@@ -116,6 +120,7 @@ namespace MemeApi.Test.Controllers
             // given
             var memeVisual = new MemeVisual()
             {
+                Id = Guid.NewGuid().ToString(),
                 Filename = "Test"
             };
             _context.Visuals.Add(memeVisual);

@@ -47,12 +47,22 @@ public class TopicRepository
         return topic;
     }
 
-    public async Task<List<Topic>> GetTopicsByNameOrDefault(IEnumerable<string> topicNames)
+    public async Task<List<Topic>> GetTopicsByNameForUser(IEnumerable<string> topicNames, string userId = null)
     {
-        var topics = topicNames != null ?
-            await _context.Topics.Where(t => topicNames.Contains(t.Name)).ToListAsync()
-            : new List<Topic> { await _context.Topics.FirstAsync(t => t.Name == _configuration["Topic.Default.Topicname"]) };
-        return topics;
+        return await GetTopicsByNameOrDefault(topicNames, userId);
+    }
+
+    public async Task<List<Topic>> GetTopicsByNameOrDefault(IEnumerable<string> topicNames, string userId = null)
+    {
+        if(topicNames != null)
+        {
+            var topics = await _context.Topics.Where(t => topicNames.Contains(t.Name)).ToListAsync();
+            var filteredTopics = topics.Where(t => t.CanUserPost(userId)).ToList();
+            if (!filteredTopics.Any()) return new List<Topic> { await _context.Topics.FirstAsync(t => t.Name == _configuration["Topic.Default.Topicname"]) };
+            return filteredTopics;
+        }
+
+        return new List<Topic> { await _context.Topics.FirstAsync(t => t.Name == _configuration["Topic.Default.Topicname"]) };
     }
     public async Task<Topic> GetDefaultTopic()
     {

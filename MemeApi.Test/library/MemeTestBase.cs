@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using MemeApi.library;
-using MemeApi.library.Mappings;
-using MemeApi.library.repositories;
+﻿using MemeApi.library.repositories;
+using MemeApi.library.Services.Files;
 using MemeApi.Models.Context;
 using MemeApi.Models.Entity;
 using MemeApi.Test.utils;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MemeApi.Test.library
 {
@@ -28,23 +25,52 @@ namespace MemeApi.Test.library
         protected readonly UserRepository _userRepository;
         protected readonly VotableRepository _votableRepository;
         protected readonly IConfiguration _configuration;
-        protected IMapper _mapper;
+        protected readonly MemeRenderingService _memeRenderingService;
         public MemeTestBase()
         {
+            var myConfiguration = new Dictionary<string, string>
+            {
+                {"Topic.Default.Topicname", "test"},
+            };
+
+            _configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(myConfiguration)
+            .Build();
+
+            _memeRenderingService = new MemeRenderingService(_configuration);
             _context = ContextUtils.CreateMemeTestContext();
             _userRepository = new UserRepository(_context, TestUserManager<User>(), new FileSaverStub());
+            _topicRepository = new TopicRepository(_context, _userRepository, _configuration);
             _visualRepository = new VisualRepository(_context, new FileSaverStub(), new FileRemoverStub(), _topicRepository);
             _textRepository = new TextRepository(_context, _topicRepository);
-            _topicRepository = new TopicRepository(_context, _userRepository, _configuration);
             _memeRepository = new MemeRepository(_context, _visualRepository, _textRepository, _configuration, _topicRepository);
            _votableRepository = new VotableRepository(_context);
-            var mappingConfig = new MapperConfiguration(mc =>
+
+            var defaultTopic = new Topic()
             {
-                mc.AddProfile(new VotableProfile());
-            });
-            _mapper = mappingConfig.CreateMapper();
+                Id = Guid.NewGuid().ToString(),
+                Owner = null,
+                Name = _configuration["Topic.Default.Topicname"],
+                Description = String.Empty,
+                Moderators = new List<User>(),
+                CreatedAt = DateTime.UtcNow,
+                LastUpdatedAt = DateTime.UtcNow
+            };
+
+            _context.Topics.Add(defaultTopic);
+            _context.SaveChanges();
+
             _configuration = new ConfigurationBuilder()
                 .Build();
+        }
+
+        public static HttpContext GetMockedHttpContext()
+        {
+            var context = new DefaultHttpContext();
+            var mockSession = new Mock<ISession>();
+            context.RequestServices = new Mock<IServiceProvider>().Object;
+            context.Session = mockSession.Object;
+            return context;
         }
         public static UserManager<TUser> TestUserManager<TUser>(IUserStore<TUser> store = null) where TUser : class
         {
