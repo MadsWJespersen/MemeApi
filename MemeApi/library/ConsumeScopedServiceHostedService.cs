@@ -11,37 +11,38 @@ namespace MemeApi.library;
 public class ConsumeScopedServiceHostedService : BackgroundService
 {
 
+    private readonly CrontabSchedule _crontabSchedule;
+    private DateTime _nextRun;
+    private const string Schedule = "30 12 * * *"; // run day at 1 am
+
     public IServiceProvider Services { get; }
     public ConsumeScopedServiceHostedService(IServiceProvider services)
     {
+        _crontabSchedule = CrontabSchedule.Parse(Schedule);
+        _nextRun = _crontabSchedule.GetNextOccurrence(DateTime.UtcNow);
         Services = services;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var schedule = CrontabSchedule.Parse("30 12 * * *"); // Run once a day at 12:30
-        var nextRun = schedule.GetNextOccurrence(DateTime.Now);
-
         while (!stoppingToken.IsCancellationRequested)
         {
-            var now = DateTime.Now;
-            if (now > nextRun)
+            await Task.Delay(UntilNextExecution(), stoppingToken); // wait until next time
+
+            using (var scope = Services.CreateScope())
             {
-                using (var scope = Services.CreateScope())
-                {
-                    var scopedProcessingService =
-                        scope.ServiceProvider
-                            .GetRequiredService<IMemeOfTheDayService>();
+                var scopedProcessingService =
+                    scope.ServiceProvider
+                        .GetRequiredService<IMemeOfTheDayService>();
 
-                    await scopedProcessingService.ExecuteAsync(stoppingToken);
-                }
-
-                nextRun = schedule.GetNextOccurrence(DateTime.Now);
+                await scopedProcessingService.ExecuteAsync(stoppingToken);
             }
-            
-            // Wait for 24 hours before the next execution
+
+            _nextRun = _crontabSchedule.GetNextOccurrence(DateTime.UtcNow);
         }
     }
+    private int UntilNextExecution() => Math.Max(0, (int)_nextRun.Subtract(DateTime.UtcNow).TotalMilliseconds);
+
 
     public override async Task StopAsync(CancellationToken stoppingToken)
     {
