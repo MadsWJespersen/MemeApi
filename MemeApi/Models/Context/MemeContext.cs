@@ -96,7 +96,7 @@ public class MemeContext : IdentityDbContext<User, IdentityRole<string>, string>
         {
             Id = Guid.NewGuid().ToString(),
             OwnerId = admin.Id,
-            Name = "Swu-reloaded",
+            Name = _configuration["Topic.Default.Topicname"],
             Description = "Memes are back baby!",
             CreatedAt = DateTime.UtcNow,
             LastUpdatedAt = DateTime.UtcNow
@@ -106,7 +106,7 @@ public class MemeContext : IdentityDbContext<User, IdentityRole<string>, string>
         {
             Id = Guid.NewGuid().ToString(),
             OwnerId = admin.Id,
-            Name = "MemeOfTheDay",
+            Name = _configuration["Topic.MemeOfTheDay.Topicname"],
             Description = "Memes of the day",
             CreatedAt = DateTime.UtcNow,
             LastUpdatedAt = DateTime.UtcNow
