@@ -94,7 +94,7 @@ public class MemesController : ControllerBase
     /// Get a random meme based on an optional seed
     /// </summary>
     [HttpGet]
-    [Route("/random/{seed?}")]
+    [Route("random/{seed?}")]
     public async Task<ActionResult<Meme>> RandomMeme(string seed = "")
     {
         var list = await _memeRepository.GetMemes();
@@ -111,7 +111,7 @@ public class MemesController : ControllerBase
     /// Get a random meme rendered to a png in the response
     /// Use the optional Query parameters TopText and BottomText to define what the top and bottom text should be
     /// </summary>
-    [HttpGet("/random/Rendered")]
+    [HttpGet("random/Rendered")]
     public async Task<ActionResult> RenderImage([FromQuery] string TopText = null, [FromQuery] string BottomText = null)
     {
         var meme = await _memeRepository.RandomMemeByComponents(TopText, BottomText);
