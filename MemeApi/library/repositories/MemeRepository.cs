@@ -140,7 +140,7 @@ public class MemeRepository
             await _textRepository.GetRandomText() 
             : await _textRepository.GetTextByContent(topText, MemeTextPosition.TopText);
 
-        var bottomtext = topText == null ?
+        var bottomtext = bottomText == null ?
             await _textRepository.GetRandomText()
             : await _textRepository.GetTextByContent(bottomText, MemeTextPosition.BottomText);
 

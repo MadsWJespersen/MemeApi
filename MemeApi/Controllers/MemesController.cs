@@ -5,10 +5,12 @@ using MemeApi.Models.DTO;
 using MemeApi.Models.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.MSIdentity.Shared;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace MemeApi.Controllers;
 
@@ -115,6 +117,9 @@ public class MemesController : ControllerBase
     public async Task<ActionResult> RenderImage([FromQuery] string TopText = null, [FromQuery] string BottomText = null)
     {
         var meme = await _memeRepository.RandomMemeByComponents(TopText, BottomText);
+        var jsonResponse = meme.ToMemeDTO();
+
+        Response.Headers.Add("X-File-Info", JsonConvert.SerializeObject(jsonResponse));
 
         return File(_memeRendererService.RenderMeme(meme), "image/png");
     }
