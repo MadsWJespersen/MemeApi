@@ -48,6 +48,12 @@ public class TextRepository
         };
     }
 
+    public async Task<MemeText> GetRandomTextByType(MemeTextPosition type, string seed = "")
+    {
+        return _context.Texts.Where(x => x.Position == type).RandomItem();
+    }
+
+
     public async Task<MemeText> GetRandomText(string seed = "")
     {
         return _context.Texts.RandomItem(seed);

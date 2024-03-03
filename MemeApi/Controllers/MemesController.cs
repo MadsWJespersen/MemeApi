@@ -117,9 +117,10 @@ public class MemesController : ControllerBase
     public async Task<ActionResult> RenderImage([FromQuery] string TopText = null, [FromQuery] string BottomText = null)
     {
         var meme = await _memeRepository.RandomMemeByComponents(TopText, BottomText);
-        var jsonResponse = meme.ToMemeDTO();
+        var jsonResponse = JsonConvert.SerializeObject(meme.ToMemeDTO());
+        var cleanedHeaderValue = Regex.Replace(jsonResponse, @"[^\x20-\x7E]", "X");
+        Response.Headers.Add("X-File-Info", cleanedHeaderValue);
 
-        Response.Headers.Add("X-File-Info", JsonConvert.SerializeObject(jsonResponse));
 
         return File(_memeRendererService.RenderMeme(meme), "image/png");
     }

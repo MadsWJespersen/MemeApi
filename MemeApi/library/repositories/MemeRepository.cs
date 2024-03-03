@@ -137,11 +137,11 @@ public class MemeRepository
     {
         var visual = await _visualRepository.GetRandomVisual();
         var toptext = topText == null ? 
-            await _textRepository.GetRandomText() 
+            await _textRepository.GetRandomTextByType(MemeTextPosition.TopText) 
             : await _textRepository.GetTextByContent(topText, MemeTextPosition.TopText);
 
         var bottomtext = bottomText == null ?
-            await _textRepository.GetRandomText()
+            await _textRepository.GetRandomTextByType(MemeTextPosition.BottomText)
             : await _textRepository.GetTextByContent(bottomText, MemeTextPosition.BottomText);
 
         var topic = topicName != null ? await _topicRepository.GetTopicByName(topicName) : null;

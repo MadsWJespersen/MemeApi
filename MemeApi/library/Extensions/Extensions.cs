@@ -20,7 +20,7 @@ public static class Extensions
         return list[random.Next(list.Count)];
     }
 
-    public static T RandomItem<T>(this DbSet<T> list, string seed = "") where T : Votable
+    public static T RandomItem<T>(this IQueryable<T> list, string seed = "") where T : Votable
     {
         if (seed == "")
         {

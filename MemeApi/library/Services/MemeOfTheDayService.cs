@@ -5,10 +5,12 @@ using MemeApi.library.repositories;
 using MemeApi.library.Services.Files;
 using MemeApi.Models.Entity;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -29,38 +31,52 @@ public class MemeOfTheDayService : IMemeOfTheDayService
 
     public async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var currentTime = DateTime.UtcNow;
-        //if (_memeRepository.HasMemeOfTheDay(currentTime)) return;
-
         Meme meme = await _memeRepository.RandomMemeByComponents();
         var wekhookUrl = _configuration["MemeOfTheDay.WebHookURL"];
 
         using (HttpClient httpClient = new HttpClient())
         {
-            var message = new Random().Next(10) != 1 ? "Meme Of the Day" : messages.RandomItem();
-            var json_payload = new StringContent(
-                    "{" +
-                        "\"content\":\"" + message + "\"," +
-                        "\"username\":\"Hjerneskade(Meme Of The Day)\"," +
-                        "\"avatar_url\":\"https://media.mads.monster/default.jpg\"" +
-                    "}",
-                Encoding.UTF8, "application/json");
-
-
-
             MultipartFormDataContent form = new MultipartFormDataContent();
-            var imageContent = _memeRenderingService.RenderMeme(meme);
-            form.Add(new ByteArrayContent(imageContent, 0, imageContent.Length), "image/png", "shit.png");
-            form.Add(json_payload, "payload_json");
-            await httpClient.PostAsync(wekhookUrl, form);
-            httpClient.Dispose();
+            try
+            {
+
+                var imageContent = _memeRenderingService.RenderMeme(meme);
+                var message = new Random().Next(10) != 1 ? "Meme Of the Day" : messages.RandomItem();
+                var json_payload = CreateJsonPayload(message);
+
+                form.Add(new ByteArrayContent(imageContent, 0, imageContent.Length), "image/png", "shit.png");
+                form.Add(json_payload, "payload_json");
+                await httpClient.PostAsync(wekhookUrl, form);
+                httpClient.Dispose();
+            }
+            catch (Exception _)
+            {
+                var jsonResponse = JsonConvert.SerializeObject(meme.ToMemeDTO());
+
+                Console.Error.WriteLine(Regex.Replace(jsonResponse, @"[^\x20-\x7E]", "X"));
+                Console.WriteLine(Regex.Replace(jsonResponse, @"[^\x20-\x7E]", "X"));
+                Console.WriteLine("Failed meme");
+                Console.Error.WriteLine("Failed meme");
+            }
+
         }
 
         //TODO: add subscribers
         //_mailSender.sendMemeOfTheDayMail(recipient, _memeRenderingService.RenderMeme(meme));
     }
 
-    // out generated text messages
+    private StringContent CreateJsonPayload(string message)
+    {
+        return new StringContent(
+        "{" +
+            "\"content\":\"" + message + "\"," +
+            "\"username\":\"Hjerneskade(Meme Of The Day)\"," +
+            "\"avatar_url\":\"https://media.mads.monster/default.jpg\"" +
+        "}",
+        Encoding.UTF8, "application/json");
+    }
+
+    // auto generated text messages
     private static readonly List<string> messages = new()
     {
             "Yo this one is fire 🔥🔥🔥",
