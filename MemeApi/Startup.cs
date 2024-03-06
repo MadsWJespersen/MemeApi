@@ -112,13 +112,15 @@ namespace MemeApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                var factory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
-                using var serviceScope = factory.CreateScope();
-                var context = serviceScope.ServiceProvider.GetRequiredService<MemeContext>();
-                if (context.Database.EnsureCreated()) // false when db already exists
-                {
-                    context.SaveChanges();
-                }
+            }
+            
+            var factory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
+            using var serviceScope = factory.CreateScope();
+            var context = serviceScope.ServiceProvider.GetRequiredService<MemeContext>();
+
+            if (context.Database.EnsureCreated()) // false when db already exists
+            {
+                context.SaveChanges();
             }
 
             app.UseMiddleware<SwaggerAuthenticationMiddleware>();
