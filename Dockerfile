@@ -13,4 +13,3 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /MemeApi
 COPY --from=build-env /MemeApi/out .
 ENTRYPOINT ["dotnet", "MemeApi.dll"]
-EXPOSE 5000
