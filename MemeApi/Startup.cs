@@ -82,8 +82,8 @@ namespace MemeApi
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
 
-            services.AddScoped<IFileSaver, FileSaver>();
-            services.AddScoped<IFileRemover, FileRemover>();
+            services.AddScoped<IFileSaver, S3FileStorageClient>();
+            services.AddScoped<IFileRemover, S3FileStorageClient>();
             services.AddScoped<IMailSender, MailSender>();
             services.AddScoped<IMemeRenderingService, MemeRenderingService>();
             services.AddScoped<MailSender>();

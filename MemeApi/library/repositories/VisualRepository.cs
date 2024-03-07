@@ -83,7 +83,7 @@ public class VisualRepository
             return false;
         }
 
-        _fileRemover.RemoveFile(Path.Combine("uploads/", memeVisual.Filename));
+        await _fileRemover.RemoveFile(Path.Combine("visual/", memeVisual.Filename));
 
         _context.Visuals.Remove(memeVisual);
         await _context.SaveChangesAsync();

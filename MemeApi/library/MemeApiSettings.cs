@@ -87,6 +87,11 @@ namespace MemeApi.library
             return TryGetConfig("BlobStorage_ServiceUrl");
         }
 
+        public string GetBlobStorageBucketName()
+        {
+            return TryGetConfig("BlobStorage_BucketName");
+        }
+
         public string GetBlobStorageAccessKey()
         {
             return TryGetConfig("BlobStorage_Access_Key");
