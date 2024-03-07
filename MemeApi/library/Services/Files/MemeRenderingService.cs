@@ -3,23 +3,32 @@ using MemeApi.Models.Entity;
 using Microsoft.Extensions.Configuration;
 using SkiaSharp;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace MemeApi.library.Services.Files;
 
 public class MemeRenderingService : IMemeRenderingService
 {
     private readonly MemeApiSettings _settings;
+    private readonly IFileLoader _loader;
 
-    public MemeRenderingService(MemeApiSettings settings)
+    public MemeRenderingService(MemeApiSettings settings, IFileLoader loader)
     {
         _settings = settings;
+        _loader = loader;
     }
 
-    public byte[] RenderMeme(Meme meme)
+    public async Task<byte[]> RenderMeme(Meme meme)
     {
         var textSize = 40;
         SKImageInfo info = new SKImageInfo(400, 400, SKColorType.Rgba8888, SKAlphaType.Premul);
-        var inputImage = SKBitmap.Decode(Path.Combine(_settings.GetBaseUploadFolder() + "\\visual", meme.MemeVisual.Filename));
+        
+        var path = Path.Combine("visual/", meme.MemeVisual.Filename);
+        var data = await _loader.LoadFile(path);
+        using SKManagedStream skStream = new(new MemoryStream(data));
+        var skBitmap = SKBitmap.Decode(skStream);
+        
+        var inputImage = SKBitmap.Decode(data);
         var resized = inputImage.Resize(info, SKFilterQuality.High);
         var canvas = new SKCanvas(resized);
 

@@ -41,7 +41,7 @@ namespace MemeApi.Test.library
             .Build();
             _settings = new MemeApiSettings(_configuration);
 
-            _memeRenderingService = new MemeRenderingService(_settings);
+            _memeRenderingService = new MemeRenderingService(_settings, new WebFileLoader(_settings));
             _context = ContextUtils.CreateMemeTestContext();
             _userRepository = new UserRepository(_context, TestUserManager<User>(), new FileSaverStub());
             _topicRepository = new TopicRepository(_context, _userRepository, _settings);

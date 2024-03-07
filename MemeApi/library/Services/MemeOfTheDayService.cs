@@ -40,7 +40,7 @@ public class MemeOfTheDayService : IMemeOfTheDayService
             try
             {
 
-                var imageContent = _memeRenderingService.RenderMeme(meme);
+                var imageContent = await _memeRenderingService.RenderMeme(meme);
                 var message = new Random().Next(10) != 1 ? "Meme Of the Day" : messages.RandomItem();
                 var json_payload = CreateJsonPayload(message);
 

@@ -84,6 +84,7 @@ namespace MemeApi
 
             services.AddScoped<IFileSaver, S3FileStorageClient>();
             services.AddScoped<IFileRemover, S3FileStorageClient>();
+            services.AddScoped<IFileLoader, WebFileLoader>();
             services.AddScoped<IMailSender, MailSender>();
             services.AddScoped<IMemeRenderingService, MemeRenderingService>();
             services.AddScoped<MailSender>();

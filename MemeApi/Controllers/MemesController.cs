@@ -122,7 +122,7 @@ public class MemesController : ControllerBase
         Response.Headers.Add("X-File-Info", cleanedHeaderValue);
 
 
-        return File(_memeRendererService.RenderMeme(meme), "image/png");
+        return File(await _memeRendererService.RenderMeme(meme), "image/png");
     }
 }
 
