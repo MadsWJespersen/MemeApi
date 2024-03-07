@@ -82,6 +82,20 @@ namespace MemeApi.library
             return TryGetConfig("Media_Host");
         }
 
+        public string GetBlobStorageServiceUrl()
+        {
+            return TryGetConfig("BlobStorage_ServiceUrl");
+        }
+
+        public string GetBlobStorageAccessKey()
+        {
+            return TryGetConfig("BlobStorage_Access_Key");
+        }
+        public string GetBlobStorageAccessKeySecret()
+        {
+            return TryGetConfig("BlobStorage_Access_Key_Secret");
+        }
+
         private string TryGetConfig(string key)
         {
             var value = _config[key];
