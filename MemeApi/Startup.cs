@@ -24,8 +24,8 @@ namespace MemeApi
     {
         public Startup()
         {
-            var builder = new ConfigurationBuilder();
-            Configuration = builder.Build();
+            Configuration = new ConfigurationBuilder()
+                .AddEnvironmentVariables().Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -96,6 +96,7 @@ namespace MemeApi
             services.AddScoped<VotableRepository>();
             services.AddScoped<TopicRepository>();
 
+            services.AddTransient<MemeApiSettings>();
 
             services.AddScoped<IMemeOfTheDayService, MemeOfTheDayService>();
             services.AddHostedService<ConsumeScopedServiceHostedService>();

@@ -12,6 +12,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MemeApi.library;
 
 namespace MemeApi.Test.library
 {
@@ -25,6 +26,8 @@ namespace MemeApi.Test.library
         protected readonly UserRepository _userRepository;
         protected readonly VotableRepository _votableRepository;
         protected readonly IConfiguration _configuration;
+        protected readonly MemeApiSettings _settings;
+
         protected readonly MemeRenderingService _memeRenderingService;
         public MemeTestBase()
         {
@@ -36,14 +39,15 @@ namespace MemeApi.Test.library
             _configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(myConfiguration)
             .Build();
+            _settings = new MemeApiSettings(_configuration);
 
-            _memeRenderingService = new MemeRenderingService(_configuration);
+            _memeRenderingService = new MemeRenderingService(_settings);
             _context = ContextUtils.CreateMemeTestContext();
             _userRepository = new UserRepository(_context, TestUserManager<User>(), new FileSaverStub());
-            _topicRepository = new TopicRepository(_context, _userRepository, _configuration);
+            _topicRepository = new TopicRepository(_context, _userRepository, _settings);
             _visualRepository = new VisualRepository(_context, new FileSaverStub(), new FileRemoverStub(), _topicRepository);
             _textRepository = new TextRepository(_context, _topicRepository);
-            _memeRepository = new MemeRepository(_context, _visualRepository, _textRepository, _configuration, _topicRepository);
+            _memeRepository = new MemeRepository(_context, _visualRepository, _textRepository, _topicRepository, _settings);
            _votableRepository = new VotableRepository(_context);
 
             var defaultTopic = new Topic()

@@ -17,14 +17,14 @@ public class MemeRepository
     private readonly VisualRepository _visualRepository;
     private readonly TextRepository _textRepository;
     private readonly TopicRepository _topicRepository;
-    private readonly IConfiguration _configuration;
-    public MemeRepository(MemeContext context, VisualRepository visualRepository, TextRepository textRepository, IConfiguration configuration, TopicRepository topicRepository)
+    private readonly MemeApiSettings _settings;
+    public MemeRepository(MemeContext context, VisualRepository visualRepository, TextRepository textRepository, TopicRepository topicRepository, MemeApiSettings settings)
     {
         _context = context;
         _visualRepository = visualRepository;
         _textRepository = textRepository;
-        _configuration = configuration;
         _topicRepository = topicRepository;
+        _settings = settings;
     }
 
     public async Task<Meme> CreateMeme(MemeCreationDTO memeDTO, string userId = null)
@@ -156,7 +156,7 @@ public class MemeRepository
         var memes = _context.Memes.
             Include(m => m.Topics)
             .Where(m =>
-                m.Topics.Any(t => t.Name == _configuration["Topic.MemeOfTheDay.Topicname"])
+                m.Topics.Any(t => t.Name == _settings.GetMemeOfTheDayTopicName())
                 ).ToList();
         return memes.Any(m => m.CreatedAt.Date == date.Date);
     }

@@ -8,18 +8,18 @@ namespace MemeApi.library.Services.Files;
 
 public class MemeRenderingService : IMemeRenderingService
 {
-    private readonly IConfiguration _configuration;
+    private readonly MemeApiSettings _settings;
 
-    public MemeRenderingService(IConfiguration configuration)
+    public MemeRenderingService(MemeApiSettings settings)
     {
-        _configuration = configuration;
+        _settings = settings;
     }
 
     public byte[] RenderMeme(Meme meme)
     {
         var textSize = 40;
         SKImageInfo info = new SKImageInfo(400, 400, SKColorType.Rgba8888, SKAlphaType.Premul);
-        var inputImage = SKBitmap.Decode(Path.Combine(_configuration["BaseUploadFolder"] + "\\visual", meme.MemeVisual.Filename));
+        var inputImage = SKBitmap.Decode(Path.Combine(_settings.GetBaseUploadFolder() + "\\visual", meme.MemeVisual.Filename));
         var resized = inputImage.Resize(info, SKFilterQuality.High);
         var canvas = new SKCanvas(resized);
 

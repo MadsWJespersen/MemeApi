@@ -15,13 +15,13 @@ public class TopicRepository
 {
     private readonly MemeContext _context;
     private UserRepository _userRepository;
-    private readonly IConfiguration _configuration;
+    private MemeApiSettings _settings;
 
-    public TopicRepository(MemeContext context, UserRepository userRepository, IConfiguration configuration)
+    public TopicRepository(MemeContext context, UserRepository userRepository, MemeApiSettings settings)
     {
         _context = context;
         _userRepository = userRepository;
-        _configuration = configuration;
+        _settings = settings;
     }
 
     public async Task<List<TopicDTO>> GetTopics()
@@ -58,15 +58,15 @@ public class TopicRepository
         {
             var topics = await _context.Topics.Where(t => topicNames.Contains(t.Name)).ToListAsync();
             var filteredTopics = topics.Where(t => t.CanUserPost(userId)).ToList();
-            if (!filteredTopics.Any()) return new List<Topic> { await _context.Topics.FirstAsync(t => t.Name == _configuration["Topic.Default.Topicname"]) };
+            if (!filteredTopics.Any()) return new List<Topic> { await _context.Topics.FirstAsync(t => t.Name == _settings.GetDefaultTopicName()) };
             return filteredTopics;
         }
 
-        return new List<Topic> { await _context.Topics.FirstAsync(t => t.Name == _configuration["Topic.Default.Topicname"]) };
+        return new List<Topic> { await _context.Topics.FirstAsync(t => t.Name == _settings.GetDefaultTopicName()) };
     }
     public async Task<Topic> GetDefaultTopic()
     {
-        return await _context.Topics.FirstAsync(t => t.Name == _configuration["Topic.Default.Topicname"]);
+        return await _context.Topics.FirstAsync(t => t.Name == _settings.GetDefaultTopicName());
     }
 
     public async Task<bool> UpdateTopic(string id, string name = null, string description = null)

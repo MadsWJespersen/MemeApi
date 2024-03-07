@@ -9,16 +9,16 @@ namespace MemeApi.library.Services;
 
 public class MailSender : IMailSender
 {
-    private readonly IConfiguration _configuration;
-    public MailSender(IConfiguration configuration)
+    private readonly MemeApiSettings _settings;
+    public MailSender(MemeApiSettings settings)
     {
-        _configuration = configuration;
+        _settings = settings;
     }
 
     public bool sendNoReplyMail(MailAddress recipient, string subject, string body)
     {
-        var client = SmtpClient(_configuration["Email.NoReply.Mail"], _configuration["Email.NoReply.Password"]);
-        var fromAddress = new MailAddress(_configuration["Email.NoReply.Mail"]);
+        var client = SmtpClient(_settings.GetNoReplyEmail(), _settings.GetNoReplyEmailPassword());
+        var fromAddress = new MailAddress(_settings.GetNoReplyEmail());
 
         var message = new MailMessage(fromAddress, recipient)
         {
@@ -31,8 +31,8 @@ public class MailSender : IMailSender
 
     public bool sendMemeOfTheDayMail(MailAddress recipient, byte[] memeOfTheDay)
     {
-        var client = SmtpClient(_configuration["Email.MemeOfTheDay.Mail"], _configuration["Email.MemeOfTheDay.Password"]);
-        var fromAddress = new MailAddress(_configuration["Email.MemeOfTheDay.Mail"]);
+        var client = SmtpClient(_settings.GetMemeOfTheDayEmail(), _settings.GetMemeOfTheDayEmailPassword());
+        var fromAddress = new MailAddress(_settings.GetMemeOfTheDayEmail());
 
         Attachment att = new Attachment(new MemoryStream(memeOfTheDay), "gaming.png");
 
@@ -57,8 +57,8 @@ public class MailSender : IMailSender
         return new SmtpClient
         {
             DeliveryMethod = SmtpDeliveryMethod.Network,
-            Host = _configuration["Email.Host"],
-            Port = int.Parse(_configuration["Email.Host.Port"]),
+            Host = _settings.GetEmailHost(),
+            Port = int.Parse(_settings.GetEmailHostPort()),
             EnableSsl = true,
             UseDefaultCredentials = false,
             Credentials = new NetworkCredential(mail, password)

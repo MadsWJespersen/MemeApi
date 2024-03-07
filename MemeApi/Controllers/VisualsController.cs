@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using MemeApi.library;
 
 namespace MemeApi.Controllers;
 
@@ -20,14 +21,14 @@ namespace MemeApi.Controllers;
 public class VisualsController : ControllerBase
 {
     private readonly VisualRepository _visualRepository;
-    private readonly IConfiguration _configuration;
+    private readonly MemeApiSettings _settings;
     /// <summary>
     /// A controller for creating and managing visual meme components.
     /// </summary>
-    public VisualsController(VisualRepository visualRepository, IConfiguration configuration)
+    public VisualsController(VisualRepository visualRepository, MemeApiSettings settings)
     {
         _visualRepository = visualRepository;
-        _configuration = configuration;
+        _settings = settings;
     }
 
     /// <summary>
@@ -47,7 +48,7 @@ public class VisualsController : ControllerBase
         var memeVisual = await _visualRepository.GetVisual(id);
 
         if (memeVisual == null) return NotFound();
-        return Ok(memeVisual.ToRandomComponentDTO(_configuration["Media.Host"]));
+        return Ok(memeVisual.ToRandomComponentDTO(_settings.GetMediaHost()));
     }
 
     /// <summary>
@@ -87,6 +88,6 @@ public class VisualsController : ControllerBase
     public async Task<ActionResult<RandomComponentDTO>> RandomVisual()
     {
         var visual = (await _visualRepository.GetVisuals()).RandomItem();
-        return Ok(visual.ToRandomComponentDTO(_configuration["Media.Host"]));
+        return Ok(visual.ToRandomComponentDTO(_settings.GetMediaHost()));
     }
 }

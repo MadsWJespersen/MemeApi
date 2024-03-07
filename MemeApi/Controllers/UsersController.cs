@@ -27,17 +27,17 @@ public class UsersController : ControllerBase
     private readonly SignInManager<User> _signInManager;
     private readonly UserManager<User> _userManager;
     private readonly IMailSender _mailSender;
-    private readonly IConfiguration _configuration;
+    private readonly MemeApiSettings _settings;
     /// <summary>
     /// A controller for creating and managing users and their login sessions.
     /// </summary>
-    public UsersController(SignInManager<User> signInManager, UserManager<User> userManager, UserRepository userRepository, IMailSender mailSender, IConfiguration configuration)
+    public UsersController(SignInManager<User> signInManager, UserManager<User> userManager, UserRepository userRepository, IMailSender mailSender, MemeApiSettings settings)
     {
         _signInManager = signInManager;
         _userManager = userManager;
         _userRepository = userRepository;
         _mailSender = mailSender;
-        _configuration = configuration;
+        _settings = settings;
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<IEnumerable<UserInfoDTO>>> GetUsers()
     {
         var users = await _userRepository.GetUsers();
-        return users.Select(u => u.ToUserInfo(_configuration["Media.Host"])).ToList();
+        return users.Select(u => u.ToUserInfo(_settings.GetMediaHost())).ToList();
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class UsersController : ControllerBase
         if (user == null)
             return NotFound();
 
-        return Ok(user.ToUserInfo(_configuration["Media.Host"]));
+        return Ok(user.ToUserInfo(_settings.GetMediaHost()));
     }
 
     /// <summary>
@@ -116,7 +116,7 @@ public class UsersController : ControllerBase
             return Conflict("Email or username already exists");
 
         await _signInManager.SignInAsync(user, false);
-        return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user.ToUserInfo(_configuration["Media.Host"]));
+        return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user.ToUserInfo(_settings.GetMediaHost()));
     }
 
     /// <summary>
@@ -172,7 +172,7 @@ public class UsersController : ControllerBase
         if (!result.Succeeded)
             return Unauthorized("The entered information was not correct");
         await _userRepository.UserLoggedIn(user);
-        return Ok(user.ToUserInfo(_configuration["Media.Host"]));
+        return Ok(user.ToUserInfo(_settings.GetMediaHost()));
     }
 
     /// <summary>

@@ -8,15 +8,15 @@ namespace MemeApi.library.Services.Files;
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 public class FileSaver : IFileSaver
 {
-    private readonly IConfiguration _configuration;
-    public FileSaver(IConfiguration configuration)
+    private readonly MemeApiSettings _settings;
+    public FileSaver(MemeApiSettings settings)
     {
-        _configuration = configuration;
+        _settings = settings;
     }
 
     public async Task SaveFile(IFormFile file, string path, string fileName)
     {
-        var completePath = Path.Combine(_configuration["BaseUploadFolder"], path, fileName);
+        var completePath = Path.Combine(_settings.GetBaseUploadFolder(), path, fileName);
         using (Stream fileStream = new FileStream(completePath, FileMode.Create))
         {
             await file.CopyToAsync(fileStream);

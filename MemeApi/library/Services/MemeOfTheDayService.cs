@@ -17,22 +17,22 @@ using System.Threading.Tasks;
 public class MemeOfTheDayService : IMemeOfTheDayService
 {
     private readonly MemeRepository _memeRepository;
-    private readonly IConfiguration _configuration;
+    private readonly MemeApiSettings _settings;
     private readonly IMemeRenderingService _memeRenderingService;
     private readonly IMailSender _mailSender;
 
-    public MemeOfTheDayService(MemeRepository memeRepository, IConfiguration configuration, IMemeRenderingService memeRenderingService, IMailSender mailSender)
+    public MemeOfTheDayService(MemeRepository memeRepository, IMemeRenderingService memeRenderingService, IMailSender mailSender, MemeApiSettings settings)
     {
         _memeRepository = memeRepository;
-        _configuration = configuration;
         _memeRenderingService = memeRenderingService;
         _mailSender = mailSender;
+        _settings = settings;
     }
 
     public async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         Meme meme = await _memeRepository.RandomMemeByComponents();
-        var wekhookUrl = _configuration["MemeOfTheDay.WebHookURL"];
+        var wekhookUrl = _settings.GetMemeOfTheDayWehbhook();
 
         using (HttpClient httpClient = new HttpClient())
         {

@@ -4,15 +4,16 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
+using MemeApi.library;
 
 namespace MemeApi.Models.Context;
 
 public class MemeContext : IdentityDbContext<User, IdentityRole<string>, string>
 {
-    private readonly IConfiguration _configuration;
-    public MemeContext(DbContextOptions<MemeContext> options, IConfiguration configuration) : base(options)
+    private readonly MemeApiSettings _settings;
+    public MemeContext(DbContextOptions<MemeContext> options, MemeApiSettings settings) : base(options)
     {
-        _configuration = configuration;
+        _settings = settings;
     }
     public DbSet<Meme> Memes { get; set; }
     public DbSet<MemeVisual> Visuals { get; set; }
@@ -74,8 +75,8 @@ public class MemeContext : IdentityDbContext<User, IdentityRole<string>, string>
         var admin = new User
         {
             Id = Guid.NewGuid().ToString(),
-            UserName = _configuration["Admin.UserName"],
-            Email = _configuration["Admin.Email"],
+            UserName = _settings.GetAdminUsername() ,
+            Email = _settings.GetAdminPassword(),
             SecurityStamp = DateTime.UtcNow.ToString(),
             CreatedAt = DateTime.UtcNow,
             LastUpdatedAt = DateTime.UtcNow,
