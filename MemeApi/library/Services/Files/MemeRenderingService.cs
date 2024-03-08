@@ -25,8 +25,6 @@ public class MemeRenderingService : IMemeRenderingService
         
         var path = Path.Combine("visual/", meme.MemeVisual.Filename);
         var data = await _loader.LoadFile(path);
-        using SKManagedStream skStream = new(new MemoryStream(data));
-        var skBitmap = SKBitmap.Decode(skStream);
         
         var inputImage = SKBitmap.Decode(data);
         var resized = inputImage.Resize(info, SKFilterQuality.High);

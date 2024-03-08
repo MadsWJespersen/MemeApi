@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System;
 
 namespace MemeApi.Controllers;
 
@@ -121,8 +122,14 @@ public class MemesController : ControllerBase
         var cleanedHeaderValue = Regex.Replace(jsonResponse, @"[^\x20-\x7E]", "X");
         Response.Headers.Add("X-File-Info", cleanedHeaderValue);
 
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        var file = File(await _memeRendererService.RenderMeme(meme), "image/png");
+        watch.Stop();
+        var elapsedMs = watch.ElapsedMilliseconds;
+        Console.WriteLine(elapsedMs);
+        Response.Headers.Add("X-File-Render-Time", elapsedMs.ToString() + "ms");
 
-        return File(await _memeRendererService.RenderMeme(meme), "image/png");
+        return file;
     }
 }
 
