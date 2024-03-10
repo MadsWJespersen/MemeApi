@@ -33,7 +33,9 @@ namespace MemeApi.Test.library
         {
             var myConfiguration = new Dictionary<string, string>
             {
-                {"Topic.Default.Topicname", "test"},
+                {"Topic_Default_Topicname", ""},
+                {"Admin_Username", "test"},
+                {"Admin_Password", "test"},
             };
 
             _configuration = new ConfigurationBuilder()
@@ -42,7 +44,7 @@ namespace MemeApi.Test.library
             _settings = new MemeApiSettings(_configuration);
 
             _memeRenderingService = new MemeRenderingService(_settings, new WebFileLoader(_settings));
-            _context = ContextUtils.CreateMemeTestContext();
+            _context = ContextUtils.CreateMemeTestContext(_settings);
             _userRepository = new UserRepository(_context, TestUserManager<User>(), new FileSaverStub());
             _topicRepository = new TopicRepository(_context, _userRepository, _settings);
             _visualRepository = new VisualRepository(_context, new FileSaverStub(), new FileRemoverStub(), _topicRepository);

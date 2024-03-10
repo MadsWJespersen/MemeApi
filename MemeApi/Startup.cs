@@ -97,7 +97,7 @@ namespace MemeApi
             services.AddScoped<VotableRepository>();
             services.AddScoped<TopicRepository>();
 
-            services.AddTransient<MemeApiSettings>();
+            services.AddSingleton<MemeApiSettings>();
 
             services.AddScoped<IMemeOfTheDayService, MemeOfTheDayService>();
             services.AddHostedService<ConsumeScopedServiceHostedService>();

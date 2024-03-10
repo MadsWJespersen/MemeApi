@@ -34,9 +34,12 @@ public class MemeContext : IdentityDbContext<User, IdentityRole<string>, string>
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-
         modelBuilder.Entity<Meme>()
-            .HasOne(m => m.MemeVisual);
+            .HasOne(m => m.MemeVisual)
+            .WithMany()
+            .HasForeignKey("MemeVisualId")
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Meme>()
             .HasOne(m => m.Toptext);

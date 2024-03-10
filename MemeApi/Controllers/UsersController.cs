@@ -108,7 +108,7 @@ public class UsersController : ControllerBase
             CreatedAt = DateTime.UtcNow,
             LastUpdatedAt = DateTime.UtcNow,
             LastLoginAt = DateTime.UtcNow,
-            Topics = new List<Topic> { }
+            Topics = []
         };
 
         var result = await _userManager.CreateAsync(user, userDTO.Password);

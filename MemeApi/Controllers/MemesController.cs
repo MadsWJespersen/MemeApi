@@ -5,7 +5,6 @@ using MemeApi.Models.DTO;
 using MemeApi.Models.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.DotNet.MSIdentity.Shared;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
